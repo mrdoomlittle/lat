@@ -13,18 +13,21 @@ int main(void) {
 	struct lat ts;
 	lat_prepare(&ts);
 
+	double period = 0.00;
 	double fi = 0.00;
-	mdl_u64_t const n = 0xffff, start = 0;
+	mdl_u64_t const n = 0xfffff, start = 0;
 	mdl_u64_t i = start;
 
 	while(i != n && !lock) {
 		lat_put(&ts, i, (void*)i);
 
-		if (fi > 10) {
-			printf("mem_usage: %lf mb\n", (double)mem_usage()*0.000001);
-			fi = 0;
+		if (period > 0.01) {
+			printf("mem_usage: %lf mb, finished: %lf\n", (double)mem_usage()*0.000001, fi);
+			fi+= period;
+			period = 0;
 		} else
-			fi+= (double)i*((double)n/100.0);
+			period+= (100.0/(double)n);
+		//usleep(1000);
 		i++;
 	}
 
