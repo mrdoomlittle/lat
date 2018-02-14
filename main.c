@@ -19,13 +19,14 @@ int main(int __argc, char const *__argv[]) {
 
 	double period = 0.00;
 	double fi = 0.00;
-	mdl_u64_t n = strtol(__argv[1], NULL, 10), start = 0;
+	mdl_u64_t start = 0;
+	mdl_u64_t n = strtol(__argv[1], NULL, 10);
 	mdl_u64_t i = start;
 
-	while(i != n && !lock) {
+	while(i != start+n && !lock) {
 		lat_put(&ts, i, (void*)i);
 
-		if (period > 0.01) {
+		if (period > 1) {
 			fi+=period;
 			printf("mem_usage: %lf mb, finished: %lf\n", (double)mem_usage()*0.000001, fi);
 			period = 0;
@@ -40,7 +41,7 @@ int main(int __argc, char const *__argv[]) {
 	struct timespec begin, end;
 
 	i = start;
-	while(i != n && !lock) {
+	while(i != start+n && !lock) {
 		void *p;
 		clock_gettime(CLOCK_MONOTONIC, &begin);
 		p = lat_get(&ts, i);

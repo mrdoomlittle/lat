@@ -28,64 +28,23 @@ void lat_prepare(latp __lat) {
 	__lat->p = alloc_pod();
 }
 
-//# define DEBUG
 void lat_put(latp __lat, mdl_u64_t __key, void *__p) {
 	podp *p = __lat->p->p;
 	if (!*(p = (p+((__key&0xff)^(__key>>8&0xff))))) {
 		*p = alloc_pod();
-# ifdef DEBUG
-		fprintf(stdout, "pod 0 allocated.\n");
-# endif
-	}
-
-	if (!*(p = (podp*)(*p)->p+((__key>>8&0xff)^(__key>>16&0xff)))) {
-		*p = alloc_pod();
-# ifdef DEBUG
-		fprintf(stdout, "pod 1 allocated.\n");
-# endif
 	}
 
 	if (!*(p = (podp*)(*p)->p+((__key>>16&0xff)^(__key>>24&0xff)))) {
 		*p = alloc_pod();
-# ifdef DEBUG
-		fprintf(stdout, "pod 2 allocated.\n");
-# endif
-	}
-
-	if (!*(p =(podp*)(*p)->p+((__key>>24&0xff)^(__key>>32&0xff)))) {
-		*p = alloc_pod();
-# ifdef DEBUG
-		fprintf(stdout, "pod 3 allocated.\n");
-# endif
 	}
 
 	if (!*(p = (podp*)(*p)->p+((__key>>32&0xff)^(__key>>40&0xff)))) {
 		*p = alloc_pod();
-# ifdef DEBUG
-		fprintf(stdout, "pod 4 allocated.\n");
-# endif
-	}
-
-	if (!*(p = (podp*)(*p)->p+((__key>>40&0xff)^(__key>>48&0xff)))) {
-		*p = alloc_pod();
-# ifdef DEBUG
-		fprintf(stdout, "pod 5 allocated.\n");
-# endif
 	}
 
 	if (!*(p = (podp*)(*p)->p+((__key>>48&0xff)^(__key>>56&0xff)))) {
-		*p = alloc_pod();
-# ifdef DEBUG
-		fprintf(stdout, "pod 6 allocated.\n");
-# endif
-	}
-
-	if (!*(p = (podp*)(*p)->p+(__key>>56&0xff))) {
 		*p = (podp)lat_mal(sizeof(struct pod));
 		(*p)->p = NULL;
-# ifdef DEBUG
-		fprintf(stdout, "pod 7 allocated.\n");
-# endif
 	}
 
 	recordp rec = lat_mal(sizeof(struct record));
@@ -102,39 +61,19 @@ void* lat_get(latp __lat, mdl_u64_t __key) {
 		fprintf(stderr, "pod 0 failure.\n");
 		return NULL;
 	}
-    
-	if (!*(p = (podp*)(*p)->p+((__key>>8&0xff)^(__key>>16&0xff)))) {
-		fprintf(stderr, "pod 1 failure.\n");
-		return NULL;
-	}
-    
+
 	if (!*(p = (podp*)(*p)->p+((__key>>16&0xff)^(__key>>24&0xff)))) {
 		fprintf(stderr, "pod 2 failure.\n");
 		return NULL;
 	}
-    
-	if (!*(p = (podp*)(*p)->p+((__key>>24&0xff)^(__key>>32&0xff)))) {
-		fprintf(stderr, "pod 3 failure.\n");
-		return NULL;
-	}
-    
+
 	if (!*(p = (podp*)(*p)->p+((__key>>32&0xff)^(__key>>40&0xff)))) {
 		fprintf(stderr, "pod 4 failure.\n");
 		return NULL;
 	}
-    
-	if (!*(p = (podp*)(*p)->p+((__key>>40&0xff)^(__key>>48&0xff)))) {
-		fprintf(stderr, "pod 5 failure.\n");
-		return NULL;
-	}
-    
+  
 	if (!*(p = (podp*)(*p)->p+((__key>>48&0xff)^(__key>>56&0xff)))) {
 		fprintf(stderr, "pod 6 failure.\n");
-		return NULL;
-	}
-    
-	if (!*(p = (podp*)(*p)->p+(__key>>56&0xff))) {
-		fprintf(stderr, "pod 7 failure.\n");
 		return NULL;
 	}
 
@@ -150,7 +89,7 @@ void* lat_get(latp __lat, mdl_u64_t __key) {
 
 void free_pod(podp __pod) {
 	mdl_u8_t static depth = 0;
-	if (depth < 7) {
+	if (depth < 3) {
 		depth++;
 		podp *p = (podp*)__pod->p;
 		while(p != (podp*)__pod->p+0x100) {
