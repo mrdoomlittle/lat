@@ -54,6 +54,7 @@ int main(int __argc, char const *__argv[]) {
 
 	lookup_time /= (double)n;
 	fprintf(stdout, "\nlookup time: %lfsec\n", lookup_time/1000000000.0);
+
 	fprintf(stdout, "records: %lu, mem_used: %lf mb\n", n, (double)mem_usage()*0.000001);
 
 	lat_free(&ts);

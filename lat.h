@@ -8,8 +8,7 @@ typedef struct record {
 } *recordp;
 
 typedef struct pod {
-	recordp list;	
-	struct pod **p;
+	void *p;
 } *podp;
 
 typedef struct lat {
